@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Finance Manager",
+    "scheme": "financemanager",
+    "slug": "finance-manager-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.finance.managerapp",
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": ["expo-router", "expo-dev-client", "@react-native-firebase/app"],
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
