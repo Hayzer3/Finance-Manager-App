@@ -8,21 +8,32 @@ export async function resolveDailyTipEnabled(
 
   try {
     return await fetchValue();
-  } catch {
+  } catch (error) {
+    console.error("Erro no Remote Config:", error);
     return DAILY_TIP_DEFAULT;
   }
 }
 
 export async function getDailyTipEnabled(): Promise<boolean> {
   const { isRunningInExpoGo } = await import("expo");
+  const isExpoGo = isRunningInExpoGo();
 
-  if (isRunningInExpoGo()) return DAILY_TIP_DEFAULT;
+  if (isExpoGo) return DAILY_TIP_DEFAULT;
 
   return resolveDailyTipEnabled(async () => {
-    const remoteConfig = await import("@react-native-firebase/remote-config");
-    const config = remoteConfig.getRemoteConfig();
-    config.defaultConfig = { show_daily_tip: DAILY_TIP_DEFAULT };
-    await remoteConfig.fetchAndActivate(config);
-    return remoteConfig.getValue(config, "show_daily_tip").asBoolean();
-  });
+    const remoteConfigModule = await import("@react-native-firebase/remote-config");
+    const remoteConfig = remoteConfigModule.default;
+    
+    await remoteConfig().setDefaults({
+      show_daily_tip: DAILY_TIP_DEFAULT,
+    });
+
+    await remoteConfig().setConfigSettings({
+      minimumFetchIntervalMillis: __DEV__ ? 0 : 43200000,
+    });
+
+    await remoteConfig().fetchAndActivate();
+
+    return remoteConfig().getBoolean("show_daily_tip");
+  }, isExpoGo);
 }
